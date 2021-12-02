@@ -1,0 +1,22 @@
+@if (auth()->user()->can('edit bank') ||
+    auth()->user()->can('delete bank'))
+    <td>
+        @can('edit bank')
+            <a href="{{ route('bank.edit', $model->id) }}" class="btn btn-success btn-icon btn-circle">
+                <i class="fa fa-edit"></i>
+            </a>
+        @endcan
+
+        @can('delete bank')
+            <form action="{{ route('bank.destroy', $model->id) }}" method="post" class="d-inline"
+                onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                @csrf
+                @method('delete')
+
+                <button class="btn btn-danger btn-icon btn-circle">
+                    <i class="ace-icon fa fa-trash"></i>
+                </button>
+            </form>
+        @endcan
+    </td>
+@endif

@@ -1,0 +1,47 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreatePelangganTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('pelanggan', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('area_id')->constrained('area');
+            $table->char('kode', 10);
+            $table->string('nama_pelanggan');
+            $table->string('npwp')->nullable();
+            $table->string('nppkp')->nullable();
+            $table->date('tgl_pkp');
+            $table->text('alamat')->nullable();
+            $table->string('kota')->nullable();
+            $table->char('kode_pos', 10)->nullable();
+            $table->string('telp1')->nullable();
+            $table->string('telp2')->nullable();
+            $table->string('nama_kontak')->nullable();
+            $table->string('telp_kontak')->nullable();
+            $table->integer('top')->nullable();
+            $table->integer('limit')->nullable();
+            $table->char('status', 5)->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('pelanggan');
+    }
+}
