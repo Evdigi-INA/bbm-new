@@ -826,7 +826,7 @@
             let biaya_masuk = $('#biaya_masuk_input').val() ? parseFloat($('#biaya_masuk_input').val()) : 0
             let clr_fee = $('#clr_fee_input').val() ? parseFloat($('#clr_fee_input').val()) : 0
 
-            let diskon = harga * diskon_persen / 100
+            let diskon = (harga *  qty) * diskon_persen / 100
             let gross = harga * qty - diskon
 
             let ppn = 0

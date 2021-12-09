@@ -328,7 +328,7 @@
 
                 //     $('#qty_modal').val(1)
                 // } else {
-                let diskon = harga * diskon_persen / 100
+                let diskon = (harga *  qty) * diskon_persen / 100
                 let gross = harga * qty - diskon
                 let ppn = 0
 
