@@ -979,7 +979,7 @@
             let qty = $('#qty_input').val() ? parseFloat($('#qty_input').val()) : 0
             let diskon_persen = $('#diskon_persen_input').val() ? parseFloat($('#diskon_persen_input').val()) : 0
 
-            let diskon = harga * diskon_persen / 100
+            let diskon = (harga *  qty) * diskon_persen / 100
             let gross = harga * qty - diskon
 
             let ppn = 0
