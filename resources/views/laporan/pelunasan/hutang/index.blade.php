@@ -50,7 +50,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row" style="margin-bottom: 1em;">
+                            {{-- <div class="form-group row" style="margin-bottom: 1em;">
                                 <div class="col-md-6">
                                     <label for="pembelian" class="control-label">Pembelian</label>
                                     <select name="pembelian" class="form-control" id="pembelian">
@@ -80,7 +80,7 @@
                                         @endforelse
                                     </select>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="form-group row" style="margin-bottom: 1em;">
                                 <div class="col-md-6">
@@ -130,7 +130,7 @@
                         <table class="table table-striped table-condensed data-table" style="margin-top: 1em;">
                             <thead>
                                 <tr>
-                                    <th>No.</th>
+                                    <th width="15">No.</th>
                                     <th>Kode</th>
                                     <th>Kode Pembelian</th>
                                     <th>Supplier</th>
@@ -140,46 +140,49 @@
                                     <th>Subtotal</th>
                                 </tr>
                             </thead>
-
                             <tbody>
                                 @php
                                     $total_nilai = 0;
                                     $grand_total = 0;
                                 @endphp
-                                @forelse ($laporan as $item)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $item->kode }}</td>
-                                        <td>{{ $item->pembelian->kode }}</td>
-                                        <td>{{ $item->pembelian->supplier ? $item->pembelian->supplier->nama_supplier : 'Tanpa Supplier' }}
-                                        </td>
-                                        <td>
-                                            {{ $item->jenis_pembayaran }}
-                                            @if ($item->jenis_pembayaran == 'Transfer')
-                                                <br>
-                                                Bank: {{ $item->bank->nama }}
-                                                <br>
-                                                Rekening:
-                                                {{ $item->rekening_bank->nomor_rekening . ' - ' . $item->rekening_bank->nama_rekening }}
-                                            @endif
+                                @forelse ($laporan as $beli)
 
-                                            @if ($item->jenis_pembayaran == 'Giro')
-                                                <br>
-                                                No Cek/Giro: {{ $item->no_cek_giro }}
-                                                <br>
-                                                Tgl Cek/Giro:
-                                                {{ $item->tgl_cek_giro }}
-                                            @endif
-                                        </td>
-                                        <td>{{ $item->pembelian->matauang->kode . ' ' . number_format($item->bayar) }}
-                                        </td>
-                                        <td>{{ $item->rate }}</td>
-                                        <td>{{ $item->pembelian->matauang->kode . ' ' . number_format($item->bayar * $item->rate) }}
-                                        </td>
-                                    </tr>
+                                    @foreach ($beli->pelunasan_hutang_detail as $detail)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $beli->kode }}</td>
+                                            <td>{{ $detail->pembelian->kode }}</td>
+                                            <td>
+                                                {{ $detail->pembelian->supplier ? $detail->pembelian->supplier->nama_supplier : 'Tanpa Supplier' }}
+                                            </td>
+                                            <td>
+                                                {{ $beli->jenis_pembayaran }}
+                                                @if ($beli->jenis_pembayaran == 'Transfer')
+                                                    <br>
+                                                    Bank: {{ $beli->bank->nama }}
+                                                    <br>
+                                                    Rekening:
+                                                    {{ $beli->rekening_bank->nomor_rekening . ' - ' . $beli->rekening_bank->nama_rekening }}
+                                                @endif
+
+                                                @if ($beli->jenis_pembayaran == 'Giro')
+                                                    <br>
+                                                    No Cek/Giro: {{ $beli->no_cek_giro }}
+                                                    <br>
+                                                    Tgl Cek/Giro:
+                                                    {{ $beli->tgl_cek_giro }}
+                                                @endif
+                                            </td>
+                                            <td>{{ $detail->pembelian->matauang->kode . ' ' . number_format($beli->bayar) }}
+                                            </td>
+                                            <td>{{ $beli->rate }}</td>
+                                            <td>{{ $detail->pembelian->matauang->kode . ' ' . number_format($beli->bayar * $beli->rate) }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                     @php
-                                        $total_nilai += $item->bayar;
-                                        $grand_total += $item->bayar * $item->rate;
+                                        $total_nilai += $beli->bayar;
+                                        $grand_total += $beli->bayar * $detail->rate;
                                     @endphp
                                 @empty
                                     <tr>
@@ -187,15 +190,6 @@
                                     </tr>
                                 @endforelse
                             </tbody>
-                            {{-- @if ($laporan)
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="5">Total</th>
-                                        <th colspan="2">{{ number_format($total_nilai) }}</th>
-                                        <th>{{ number_format($grand_total) }}</th>
-                                    </tr>
-                                </tfoot>
-                            @endif --}}
                         </table>
                     </div>
                 </div>

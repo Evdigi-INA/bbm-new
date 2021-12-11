@@ -50,7 +50,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row" style="margin-bottom: 1em;">
+                            {{-- <div class="form-group row" style="margin-bottom: 1em;">
                                 <div class="col-md-6">
                                     <label for="penjualan" class="control-label">Penjualan</label>
                                     <select name="penjualan" class="form-control" id="penjualan">
@@ -80,7 +80,7 @@
                                         @endforelse
                                     </select>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="form-group row" style="margin-bottom: 1em;">
                                 <div class="col-md-6">
@@ -133,7 +133,7 @@
                                     <th>No.</th>
                                     <th>Kode</th>
                                     <th>Kode Penjualan</th>
-                                    <th>Tanggal</th>
+                                    {{-- <th>Tanggal</th> --}}
                                     <th>Pelanggan</th>
                                     <th>Jenis Pembayaran</th>
                                     <th>Nilai</th>
@@ -147,42 +147,45 @@
                                     $total_nilai = 0;
                                     $grand_total = 0;
                                 @endphp
-                                @forelse ($laporan as $item)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $item->kode }}</td>
-                                        <td>{{ $item->penjualan->kode }}</td>
-                                        <td>{{ $item->tanggal->format('d F Y') }}</td>
-                                        <td>{{ $item->penjualan->pelanggan ? $item->penjualan->pelanggan->nama_pelanggan : 'Tanpa pelanggan' }}
-                                        </td>
-                                        <td>
-                                            {{ $item->jenis_pembayaran }}
-                                            @if ($item->jenis_pembayaran == 'Transfer')
-                                                <br>
-                                                Bank: {{ $item->bank->nama }}
-                                                <br>
-                                                Rekening:
-                                                {{ $item->rekening_bank->nomor_rekening . ' - ' . $item->rekening_bank->nama_rekening }}
-                                            @endif
+                                @forelse ($laporan as $jual)
+                                    @foreach ($jual->pelunasan_piutang_detail as $detail)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $jual->kode }}</td>
+                                            <td>{{ $detail->penjualan->kode }}</td>
+                                            {{-- <td>{{ $detail->tanggal->format('d F Y') }}</td> --}}
+                                            <td>{{ $detail->penjualan->pelanggan ? $detail->penjualan->pelanggan->nama_pelanggan : 'Tanpa pelanggan' }}
+                                            </td>
+                                            <td>
+                                                {{ $jual->jenis_pembayaran }}
+                                                @if ($jual->jenis_pembayaran == 'Transfer')
+                                                    <br>
+                                                    Bank: {{ $jual->bank->nama }}
+                                                    <br>
+                                                    Rekening:
+                                                    {{ $jual->rekening_bank->nomor_rekening . ' - ' . $jual->rekening_bank->nama_rekening }}
+                                                @endif
 
-                                            @if ($item->jenis_pembayaran == 'Giro')
-                                                <br>
-                                                No Cek/Giro: {{ $item->no_cek_giro }}
-                                                <br>
-                                                Tgl Cek/Giro:
-                                                {{ date('d F Y', strtotime($item->tgl_cek_giro)) }}
-                                            @endif
-                                        </td>
-                                        <td>{{ $item->penjualan->matauang->kode . ' ' . number_format($item->bayar) }}
-                                        </td>
-                                        <td>{{ $item->rate }}</td>
-                                        <td>{{ $item->penjualan->matauang->kode . ' ' . number_format($item->bayar * $item->rate) }}
-                                        </td>
-                                    </tr>
-                                    @php
-                                        $total_nilai += $item->bayar;
-                                        $grand_total += $item->bayar * $item->rate;
-                                    @endphp
+                                                @if ($jual->jenis_pembayaran == 'Giro')
+                                                    <br>
+                                                    No Cek/Giro: {{ $jual->no_cek_giro }}
+                                                    <br>
+                                                    Tgl Cek/Giro:
+                                                    {{ date('d F Y', strtotime($jual->tgl_cek_giro)) }}
+                                                @endif
+                                            </td>
+                                            <td>{{ $detail->penjualan->matauang->kode . ' ' . number_format($jual->bayar) }}
+                                            </td>
+                                            <td>{{ $jual->rate }}</td>
+                                            <td>{{ $detail->penjualan->matauang->kode . ' ' . number_format($jual->bayar * $jual->rate) }}
+                                            </td>
+                                        </tr>
+                                        @php
+                                            $total_nilai += $jual->bayar;
+                                            $grand_total += $jual->bayar * $jual->rate;
+                                        @endphp
+                                    @endforeach
+
                                 @empty
                                     <tr>
                                         <td colspan="8" class="text-center">Data tidak ditemukan</td>
