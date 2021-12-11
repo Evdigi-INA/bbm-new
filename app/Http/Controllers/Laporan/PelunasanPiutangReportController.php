@@ -43,29 +43,36 @@ class PelunasanPiutangReportController extends Controller
 
     protected function getLaporan()
     {
-        return PelunasanPiutang::with('penjualan', 'penjualan.pelanggan', 'penjualan.matauang', 'bank', 'rekening_bank')
+        return PelunasanPiutang::with(
+            'pelunasan_piutang_detail.penjualan',
+            'pelunasan_piutang_detail.penjualan.pelanggan:id,nama_pelanggan',
+            'pelunasan_piutang_detail.penjualan.matauang:id,kode',
+            'bank:id,kode,nama',
+            'rekening_bank:id,nomor_rekening,nama_rekening'
+        )
             ->when(request()->query('jenis_pembayaran'), function ($q) {
                 $q->where('jenis_pembayaran', request()->query('jenis_pembayaran'));
             })
-            ->whereHas('penjualan', function ($q) {
-                $q->when(request()->query('penjualan'), function ($q) {
-                    $q->where('id',  request()->query('penjualan'));
-                });
-            })
-            ->whereHas('penjualan.pelanggan', function ($q) {
-                $q->when(request()->query('pelanggan'), function ($q) {
-                    $q->where('id',  request()->query('pelanggan'));
-                });
-            })
-            ->whereHas('penjualan.matauang', function ($q) {
-                $q->when(request()->query('matauang'), function ($q) {
-                    $q->where('id',  request()->query('matauang'));
+            // ->when(request()->query('penjualan'), function ($q) {
+            //     $q->whereHas('pelunasan_piutang_detail.penjualan', function ($q) {
+            //         $q->where('id',  request()->query('penjualan'));
+            //     });
+            // })
+            // ->when(request()->query('pelanggan'), function ($q) {
+            //     $q->whereHas('pelunasan_piutang_detail.penjualan', function ($q) {
+            //         $q->where('pelanggan_id',  request()->query('pelanggan'));
+            //     });
+            // })
+            ->when(request()->query('matauang'), function ($q) {
+                $q->whereHas('pelunasan_piutang_detail.penjualan', function ($q) {
+                    $q->where('matauang_id',  request()->query('matauang'));
                 });
             })
             ->whereBetween('tanggal', [
                 request()->query('dari_tanggal'),
                 request()->query('sampai_tanggal')
             ])
+            ->limit(100)
             ->get();
     }
 }

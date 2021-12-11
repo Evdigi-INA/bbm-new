@@ -21,6 +21,8 @@ class PelunasanHutangReportController extends Controller
             $laporan = $this->getLaporan();
         }
 
+        // return $laporan;
+        // die;
         return view('laporan.pelunasan.hutang.index', compact('laporan'));
     }
 
@@ -43,21 +45,26 @@ class PelunasanHutangReportController extends Controller
 
     protected function getLaporan()
     {
-        return PelunasanHutang::with('pembelian', 'pembelian.supplier', 'pembelian.matauang', 'bank', 'rekening_bank')
+        return PelunasanHutang::with(
+            'pelunasan_hutang_detail.pembelian',
+            'pelunasan_hutang_detail.pembelian.supplier:id,kode,nama_supplier',
+            'pelunasan_hutang_detail.pembelian.matauang:id,kode',
+            'bank:id,kode,nama',
+            'rekening_bank:id,nomor_rekening,nama_rekening'
+        )
             ->when(request()->query('jenis_pembayaran'), function ($q) {
                 $q->where('jenis_pembayaran', request()->query('jenis_pembayaran'));
             })
-            ->whereHas('pembelian', function ($q) {
-                $q->when(request()->query('pembelian'), function ($q) {
-                    $q->where('id',  request()->query('pembelian'));
-                });
-            })
-            ->whereHas('pembelian.supplier', function ($q) {
-                $q->when(request()->query('supplier'), function ($q) {
-                    $q->where('id',  request()->query('supplier'));
-                });
-            })
-            ->whereHas('pembelian.matauang', function ($q) {
+            // ->whereHas('pelunasan_hutang_detail.pembelian', function ($q) {
+            //     $q->when(request()->query('pembelian'), function ($q) {
+            //         $q->where('id',  request()->query('pembelian'));
+            //     });
+
+            //     $q->when(request()->query('supplier'), function ($q) {
+            //         $q->where('supplier_id',  request()->query('supplier'));
+            //     });
+            // })
+            ->whereHas('pelunasan_hutang_detail.pembelian.matauang', function ($q) {
                 $q->when(request()->query('matauang'), function ($q) {
                     $q->where('id',  request()->query('matauang'));
                 });
@@ -66,6 +73,7 @@ class PelunasanHutangReportController extends Controller
                 request()->query('dari_tanggal'),
                 request()->query('sampai_tanggal')
             ])
+            ->limit(100)
             ->get();
     }
 }
