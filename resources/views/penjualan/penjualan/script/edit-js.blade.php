@@ -102,7 +102,7 @@
                     0
                 let netto = $('#netto_input').val()
 
-                let gross = harga * qty
+                let gross = (qty * harga) - diskon
 
                 let stok = parseInt($('#stok').val())
                 let min_stok = parseInt($('#min_stok').val())
@@ -557,7 +557,7 @@
             let clr_fee = $('#clr_fee_input').val() ? parseFloat($('#clr_fee_input').val()) : 0
             let netto = $('#netto_input').val()
 
-            let gross = harga * qty
+            let gross = (qty * harga) - diskon
 
             let stok = parseInt($('#stok').val())
             let min_stok = parseInt($('#min_stok').val())
@@ -787,8 +787,8 @@
             let qty = $('#qty_input').val() ? parseFloat($('#qty_input').val()) : 0
             let diskon_persen = $('#diskon_persen_input').val() ? parseFloat($('#diskon_persen_input').val()) : 0
 
-              let diskon = (harga *  qty) * diskon_persen / 100
-            let gross = harga * qty - diskon
+            let diskon = (harga * qty) * diskon_persen / 100
+            let gross = (qty * harga) - diskon
 
             let ppn = 0
 

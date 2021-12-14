@@ -27,7 +27,7 @@
 
             let netto = $('#netto_input').val()
 
-            let gross = harga * qty_retur
+            let gross = (harga * qty_retur) - diskon
 
             // cek duplikasi barang
             $('input[name="barang_id[]"]').each(function() {
@@ -428,7 +428,8 @@
                     text: 'Qty Retur tidak boleh lebih besar dari Qty Beli!'
                 })
             } else {
-                let diskon = harga * (diskon_persen / 100)
+                let diskon = ((harga * qty_retur) * diskon_persen) / 100
+
                 let gross = (harga * qty_retur) - diskon
 
                 let ppn = 0

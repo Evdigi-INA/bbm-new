@@ -29,7 +29,7 @@
             let clr_fee = $('#clr_fee_input').val() ? parseFloat($('#clr_fee_input').val()) : 0
             let netto = $('#netto_input').val()
 
-            let gross = harga * qty_retur
+            let gross = (qty_retur * harga) - diskon
 
             // cek duplikasi barang
             $('input[name="barang_id[]"]').each(function() {
@@ -519,8 +519,9 @@
                     text: 'Qty Retur tidak boleh lebih besar dari Qty Beli!'
                 })
             } else {
-                let diskon = harga * (diskon_persen / 100)
-                let gross = (harga * qty_retur) - diskon
+                let diskon = ((harga * qty_retur) * diskon_persen) / 100
+
+                let gross = (qty_retur * harga) - diskon
 
                 let ppn = 0
                 let pph = 0

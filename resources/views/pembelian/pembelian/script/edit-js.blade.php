@@ -70,7 +70,7 @@
                 let clr_fee = $('#clr_fee_input').val() ? parseFloat($('#clr_fee_input').val()) : 0
                 let netto = $('#netto_input').val()
 
-                let gross = harga * qty
+                let gross = (qty * harga) - diskon
 
                 // cek duplikasi barang
                 $('input[name="barang[]"]').each(function() {
@@ -581,7 +581,7 @@
             let clr_fee = $('#clr_fee_input').val() ? parseFloat($('#clr_fee_input').val()) : 0
             let netto = $('#netto_input').val()
 
-            let gross = harga * qty
+            let gross = (qty * harga) - diskon
 
             // cek duplikasi pas update
             $('input[name="barang[]"]').each(function(i) {
@@ -826,8 +826,8 @@
             let biaya_masuk = $('#biaya_masuk_input').val() ? parseFloat($('#biaya_masuk_input').val()) : 0
             let clr_fee = $('#clr_fee_input').val() ? parseFloat($('#clr_fee_input').val()) : 0
 
-            let diskon = (harga *  qty) * diskon_persen / 100
-            let gross = harga * qty - diskon
+            let diskon = (harga * qty) * diskon_persen / 100
+            let gross = (qty * harga) - diskon
 
             let ppn = 0
             let pph = 0
