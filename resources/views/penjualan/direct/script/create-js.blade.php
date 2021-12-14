@@ -328,8 +328,8 @@
 
                 //     $('#qty_modal').val(1)
                 // } else {
-                let diskon = (harga *  qty) * diskon_persen / 100
-                let gross = harga * qty - diskon
+                let diskon = (harga * qty) * diskon_persen / 100
+                let gross = (qty * harga) - diskon
                 let ppn = 0
 
                 if ($('#checkbox_ppn').is(':checked')) {

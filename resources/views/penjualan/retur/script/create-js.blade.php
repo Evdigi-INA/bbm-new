@@ -128,7 +128,7 @@
 
             let netto = $('#netto_input').val()
 
-            let gross = harga * qty_retur
+            let gross = (qty_retur * harga) - diskon
 
             // cek duplikasi barang
             $('input[name="barang_id[]"]').each(function() {
@@ -569,6 +569,7 @@
                 })
             } else {
                 let diskon = harga * (diskon_persen / 100)
+
                 let gross = (harga * qty_retur) - diskon
 
                 let ppn = 0
