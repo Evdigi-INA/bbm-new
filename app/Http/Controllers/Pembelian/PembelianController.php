@@ -218,7 +218,14 @@ class PembelianController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $pembelian = Pembelian::findOrFail($id);
+        $pembelian = Pembelian::with('pembelian_detail')->findOrFail($id);
+
+        foreach ($pembelian->pembelian_detail as  $pd) {
+            // Update stok barang
+            $barangQuery = Barang::whereId($pd->barang_id);
+            $getBarang = $barangQuery->first();
+            $barangQuery->update(['stok' => ($getBarang->stok - $pd->qty)]);
+        }
 
         DB::transaction(function () use ($request, $pembelian) {
             // hapus list lama
@@ -302,6 +309,15 @@ class PembelianController extends Controller
      */
     public function destroy(Pembelian $pembelian)
     {
+        $pembelian->load('pembelian_detail');
+
+        foreach ($pembelian->pembelian_detail as  $pd) {
+            // Update stok barang
+            $barangQuery = Barang::whereId($pd->barang_id);
+            $getBarang = $barangQuery->first();
+            $barangQuery->update(['stok' => ($getBarang->stok - $pd->qty)]);
+        }
+
         $pembelian->pesanan_pembelian()->update(['status_po' => 'OPEN']);
         $pembelian->delete();
 
