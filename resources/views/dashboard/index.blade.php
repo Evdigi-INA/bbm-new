@@ -119,8 +119,8 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>
-                                            <img src="{{ asset('storage/img/barang/' . $item->barang->gambar) }}"
-                                                alt="gambar" class="img-fluid rounded"
+                                            <img src="{{ asset('/img/barang/' . $item->barang->gambar) }}" alt="gambar"
+                                                class="img-fluid rounded"
                                                 style="width: 80px; height: 80px; object-fit: cover; border-radius: 3px;">
                                         </td>
                                         <td>{{ $item->barang->kode . ' - ' . $item->barang->nama }}</td>

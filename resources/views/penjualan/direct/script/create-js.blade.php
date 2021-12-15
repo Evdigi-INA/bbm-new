@@ -271,14 +271,14 @@
                     barang = ''
                     $('#list-barang').html(`
                     <div class="col-md-12 text-center">
-                        <img src="../../storage/img/barang/loading.gif" alt="Loading..." width="20">
+                        <img src="../../img/barang/loading.gif" alt="Loading..." width="20">
                     </div>`)
 
                     setTimeout(() => {
                         if (data.length > 0) {
                             $.each(data, function(key, value) {
                                 barang += `<div class="col-md-4 text-center card">
-                                    <img src="${ value.gambar == 'noimage.png' ? '../../img/' : '../../storage/img/barang/'}${value.gambar}" alt="gambar barang" class="img-fluid rounded" style="width: 100%; height: 190px; object-fit: cover; border-radius: 3px; margin-bottom: 5px;">
+                                    <img src="${ value.gambar == 'noimage.png' ? '../../img/' : '../../img/barang/'}${value.gambar}" alt="gambar barang" class="img-fluid rounded" style="width: 100%; height: 190px; object-fit: cover; border-radius: 3px; margin-bottom: 5px;">
 
                                     <p class="p_nama_barang">${value.kode} - ${value.nama}</p>
 

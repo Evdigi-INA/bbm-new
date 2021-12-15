@@ -88,14 +88,14 @@ class BarangController extends Controller
     public function store(StoreBarangRequest $request)
     {
         $data = $request->validated();
-        $data['gambar'] = 'noimage.png';
+        $data['gambar'] = 'no_image.webp';
         $data['kategori_id'] = $request->kategori;
         $data['satuan_id'] = $request->satuan;
 
         if ($request->has('gambar') && $request->file('gambar')->isValid()) {
             $filename = time() . '.' . $request->gambar->extension();
 
-            $request->gambar->storeAs('public/img/barang/', $filename);
+            $request->gambar->move(public_path('/img/barang'), $filename);
 
             $data['gambar'] = $filename;
         }
@@ -136,11 +136,14 @@ class BarangController extends Controller
         if ($request->has('gambar') && $request->file('gambar')->isValid()) {
             $filename = time()  . '.' . $request->gambar->extension();
 
-            $request->gambar->storeAs('public/img/barang/', $filename);
+            $request->gambar->move(public_path('/img/barang'), $filename);
+
+            // $request->gambar->storeAs('public/img/barang/', $filename);
 
             // hapus gambar lama jika bukan gambar default
-            if ($barang->gambar != 'noimage.png') {
-                Storage::delete('public/img/barang/' . $barang->gambar);
+            if ($barang->gambar != 'no_image.webp') {
+                // Storage::delete('public/img/barang/' . $barang->gambar);
+                unlink(public_path("/img/barang/$barang->gambar"));
             }
 
             $data['gambar'] = $filename;
@@ -162,8 +165,8 @@ class BarangController extends Controller
     public function destroy(Barang $barang)
     {
         // hapus gambar lama jika bukan gambar default
-        if ($barang->gambar != 'noimage.png') {
-            Storage::delete('public/img/barang/' . $barang->gambar);
+        if ($barang->gambar != 'no_image.webp') {
+            unlink(public_path("/img/barang/$barang->gambar"));
         }
 
         $barang->delete();
