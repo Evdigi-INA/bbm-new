@@ -34,7 +34,7 @@ class BarangController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', 'master-data.barang.data-table.action')
                 ->addColumn('gambar', function ($row) {
-                    return asset('storage/img/barang/' . $row->gambar);
+                    return asset('/img/barang/' . $row->gambar);
                 })
                 ->addColumn('created_at', function ($row) {
                     return $row->created_at->format('d F Y H:i');
