@@ -176,7 +176,20 @@ class ReturPenjualanController extends Controller
      */
     public function update(Request $request, ReturPenjualan $returPenjualan)
     {
+        $returPenjualan->load('retur_penjualan_detail');
+
         DB::transaction(function () use ($request, $returPenjualan) {
+            foreach ($returPenjualan->retur_penjualan_detail as $pd) {
+                // Update stok barang
+                $barangQuery = Barang::whereId($pd->barang_id);
+                $getBarang = $barangQuery->first();
+                $barangQuery->update(['stok' => ($getBarang->stok - $pd->qty_retur)]);
+            }
+
+            // hapus retur lama
+            $returPenjualan->penjualan()->update(['retur' => 'NO']);
+            $returPenjualan->retur_penjualan_detail()->delete();
+
             $returPenjualan->update([
                 'gudang_id' => $request->gudang,
                 'keterangan' => $request->keterangan,
@@ -187,10 +200,6 @@ class ReturPenjualanController extends Controller
                 'total_diskon' => floatval($request->total_diskon),
                 'total_netto' => floatval($request->total_netto),
             ]);
-
-            // hapus retur lama
-            $returPenjualan->penjualan()->update(['retur' => 'NO']);
-            $returPenjualan->retur_penjualan_detail()->delete();
 
             foreach ($request->barang as $i => $value) {
                 $returDetail[] = new ReturPenjualanDetail([
@@ -227,6 +236,15 @@ class ReturPenjualanController extends Controller
      */
     public function destroy(ReturPenjualan $returPenjualan)
     {
+        $returPenjualan->load('retur_penjualan_detail');
+
+        foreach ($returPenjualan->retur_penjualan_detail as $pd) {
+            // Update stok barang
+            $barangQuery = Barang::whereId($pd->barang_id);
+            $getBarang = $barangQuery->first();
+            $barangQuery->update(['stok' => ($getBarang->stok - $pd->qty_retur)]);
+        }
+
         $returPenjualan->penjualan()->update(['retur' => 'NO']);
         $returPenjualan->delete();
 

@@ -253,7 +253,7 @@
                                 <label class="col-md-3 control-label" for="gambar">Gambar</label>
 
                                 <div class="col-md-4 text-center">
-                                    <img src="{{ asset('storage/img/barang/' . $barang->gambar) }}" alt="gambar"
+                                    <img src="{{ asset('/img/barang/' . $barang->gambar) }}" alt="Gambar Barang"
                                         class="img-fluid rounded" style="width: 150px; height: 120px; object-fit: cover;">
                                 </div>
 

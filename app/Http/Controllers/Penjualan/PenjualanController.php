@@ -227,7 +227,16 @@ class PenjualanController extends Controller
      */
     public function update(Request $request, Penjualan $penjualan)
     {
+        $penjualan->load('penjualan_detail');
+
         DB::transaction(function () use ($request, $penjualan) {
+            foreach ($penjualan->penjualan_detail as $pd) {
+                // Update stok barang
+                $barangQuery = Barang::whereId($pd->barang_id);
+                $getBarang = $barangQuery->first();
+                $barangQuery->update(['stok' => ($getBarang->stok + $pd->qty)]);
+            }
+
             // hapus list lama
             $penjualan->penjualan_pembayaran()->delete();
             $penjualan->cek_giro()->delete();
@@ -312,6 +321,15 @@ class PenjualanController extends Controller
      */
     public function destroy(Penjualan $penjualan)
     {
+        $penjualan->load('penjualan_detail');
+
+        foreach ($penjualan->penjualan_detail as $pd) {
+            // Update stok barang
+            $barangQuery = Barang::whereId($pd->barang_id);
+            $getBarang = $barangQuery->first();
+            $barangQuery->update(['stok' => ($getBarang->stok + $pd->qty)]);
+        }
+
         $penjualan->delete();
 
         Alert::success('Hapus Data', 'Berhasil');

@@ -187,9 +187,20 @@ class ReturPembelianController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $returPembelian = ReturPembelian::findOrFail($id);
+        $returPembelian = ReturPembelian::with('retur_pembelian_detail')->findOrFail($id);
 
         DB::transaction(function () use ($request, $returPembelian) {
+            foreach ($returPembelian->retur_pembelian_detail as  $pd) {
+                // Update stok barang
+                $barangQuery = Barang::whereId($pd->barang_id);
+                $getBarang = $barangQuery->first();
+                $barangQuery->update(['stok' => ($getBarang->stok + $pd->qty_retur)]);
+            }
+
+            // hapus retur lama
+            $returPembelian->retur_pembelian_detail()->delete();
+            $returPembelian->pembelian()->update(['retur' => 'NO']);
+
             $returPembelian->update([
                 'gudang_id' => $request->gudang,
                 'keterangan' => $request->keterangan,
@@ -202,10 +213,6 @@ class ReturPembelianController extends Controller
                 'total_biaya_masuk' => floatval($request->total_biaya_masuk),
                 'total_netto' => floatval($request->total_netto),
             ]);
-
-            // hapus retur lama
-            $returPembelian->retur_pembelian_detail()->delete();
-            $returPembelian->pembelian()->update(['retur' => 'NO']);
 
             foreach ($request->barang as $i => $value) {
                 $returDetail[] = new ReturPembelianDetail([
@@ -245,6 +252,15 @@ class ReturPembelianController extends Controller
      */
     public function destroy(ReturPembelian $returPembelian)
     {
+        $returPembelian->load('retur_pembelian_detail');
+
+        foreach ($returPembelian->retur_pembelian_detail as  $pd) {
+            // Update stok barang
+            $barangQuery = Barang::whereId($pd->barang_id);
+            $getBarang = $barangQuery->first();
+            $barangQuery->update(['stok' => ($getBarang->stok + $pd->qty_retur)]);
+        }
+
         $returPembelian->pembelian()->update(['retur' => 'NO']);
         $returPembelian->delete();
 
@@ -271,7 +287,9 @@ class ReturPembelianController extends Controller
     {
         abort_if(!request()->ajax(), 404);
 
-        $checkLatestKode = ReturPembelian::whereMonth('tanggal', date('m', strtotime($tanggal)))->whereYear('tanggal', date('Y', strtotime($tanggal)))->latest()->first();
+        $checkLatestKode = ReturPembelian::whereMonth('tanggal', date('m', strtotime($tanggal)))->whereYear('tanggal', date('Y', strtotime($tanggal)))
+            ->latest()
+            ->first();
 
         if ($checkLatestKode == null) {
             $kode = 'PURRT-' . date('Ym', strtotime($tanggal)) . '00001';
