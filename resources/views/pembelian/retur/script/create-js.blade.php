@@ -3,6 +3,9 @@
         integrity="sha256-EQtsX9S1OVXguoTG+N488HS0oZ1+s80IbOEbE3wzJig=" crossorigin="anonymous"></script>
 
     <script>
+        let global_clr_fee = 0
+        let global_biaya_masuk = 0
+
         get_kode()
         cek_form_entry()
 
@@ -129,7 +132,6 @@
                     // $('#gross_input').val(gross)
 
                     hitung_netto()
-                    // asdjaja
 
                     cek_form_entry()
                 })
@@ -404,6 +406,9 @@
             $('#btn_update_brg').prop('disabled', false)
             $('#btn_clear_form_brg').prop('disabled', false)
 
+            global_biaya_masuk = 0
+            global_clr_fee = 0
+
             // ambil <tr> index
             let index = $(this).parent().parent().index()
 
@@ -449,6 +454,8 @@
             $('#barang_input').val(barang_text)
             $('#barang_hidden').val(barang_id)
             // $('#qty_retur_input').val(qty_retur < 1 ? 1 : qty_retur)
+            global_biaya_masuk = biaya_masuk
+            global_clr_fee = clr_fee
 
             $('#btn_add').hide()
             $('#btn_update').show()
@@ -464,6 +471,8 @@
 
             $('#btn_clear_form').prop('disabled', false)
             $('#btn_update').prop('disabled', true)
+
+            // console.log(`clr_fee dari btn_edit: ${clr_fee}`);
         })
 
         // hitung jumlan <> pada table#tbl_trx
@@ -676,6 +685,8 @@
             let clr_fee = $('#clr_fee_input').val() ?
                 parseFloat($('#clr_fee_input').val()) : 0
 
+            let netto = 0
+
             if (qty_retur > qty_beli) {
                 $('#qty_retur_input').focus()
                 $('#qty_retur_input').val('1')
@@ -699,6 +710,14 @@
 
                 // let gross = (harga * (qty_beli - qty_retur)) - diskon
 
+                // if (clr_fee > 0) {
+                //     clr_fee = (clr_fee / qty_beli) * qty_retur
+                // }
+
+                // if (biaya_masuk > 0) {
+                //     biaya_masuk = (biaya_masuk / qty_beli) * qty_retur
+                // }
+
                 let ppn = 0
                 let pph = 0
 
@@ -711,13 +730,19 @@
                     pph = ppn / 4
                 }
 
-                let netto = gross + ppn + pph + biaya_masuk + clr_fee
+                netto = gross + ppn + pph + biaya_masuk + clr_fee
 
                 $('#diskon_input').val(diskon)
                 $('#ppn_input').val(ppn)
                 $('#pph_input').val(pph)
                 $('#netto_input').val(netto)
                 $('#gross_input').val(gross)
+                $('#biaya_masuk_input').val((global_biaya_masuk / qty_beli) * qty_retur)
+                $('#clr_fee_input').val((global_clr_fee / qty_beli) * qty_retur)
+
+                // console.log(`clr_fee: ${format_ribuan(clr_fee / qty_beli * qty_retur)}`);
+                // console.log('biaya_masuk : ' + biaya_masuk);
+
             }
         }
 

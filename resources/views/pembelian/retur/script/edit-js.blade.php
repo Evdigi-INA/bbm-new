@@ -3,6 +3,9 @@
         integrity="sha256-EQtsX9S1OVXguoTG+N488HS0oZ1+s80IbOEbE3wzJig=" crossorigin="anonymous"></script>
 
     <script>
+        let global_clr_fee = 0
+        let global_biaya_masuk = 0
+
         cek_form_entry()
         hitung_semua_total()
 
@@ -302,6 +305,8 @@
             $('#barang_input').val(barang_text)
             $('#barang_hidden').val(barang_id)
             // $('#qty_retur_input').val(qty_retur < 1 ? 1 : qty_retur)
+            global_biaya_masuk = biaya_masuk
+            global_clr_fee = clr_fee
 
             $('#btn_add').hide()
             $('#btn_update').show()
@@ -542,6 +547,8 @@
                 $('#pph_input').val(pph)
                 $('#netto_input').val(netto)
                 $('#gross_input').val(gross)
+                $('#biaya_masuk_input').val((global_biaya_masuk / qty_beli) * qty_retur)
+                $('#clr_fee_input').val((global_clr_fee / qty_beli) * qty_retur)
             }
         }
 
