@@ -115,6 +115,7 @@
                                         <th>Qty</th>
                                         <th>Harga</th>
                                         <th>Total</th>
+                                        <th>Harga Stok</th>
                                     </tr>
                                 </thead>
 
@@ -123,26 +124,32 @@
                                         $grandtotal_beli = 0;
                                         $total_qty_beli = 0;
                                         $total_harga_beli = 0;
+                                        $total_harga_stok_beli = 0;
 
                                         $grandtotal_retur_beli = 0;
                                         $total_qty_retur_beli = 0;
                                         $total_harga_retur_beli = 0;
+                                        $total_harga_stok_retur_beli = 0;
 
                                         $grandtotal_jual = 0;
                                         $total_qty_jual = 0;
                                         $total_harga_jual = 0;
+                                        $total_harga_stok_jual = 0;
 
                                         $grandtotal_retur_jual = 0;
                                         $total_qty_retur_jual = 0;
                                         $total_harga_retur_jual = 0;
+                                        $total_harga_stok_retur_jual = 0;
 
                                         $grandtotal_adjustment_plus = 0;
                                         $total_qty_adjustment_plus = 0;
                                         $total_harga_adjustment_plus = 0;
+                                        $total_harga_stok_adjustment_plus = 0;
 
                                         $grandtotal_adjustment_minus = 0;
                                         $total_qty_adjustment_minus = 0;
                                         $total_harga_adjustment_minus = 0;
+                                        $total_harga_stok_adjustment_minus = 0;
 
                                         $no = 1;
                                     @endphp
@@ -156,17 +163,15 @@
                                                 <td>{{ $item->pembelian->gudang->nama }}</td>
                                                 <td>Purch</td>
                                                 <td> {{ $item->qty }}</td>
-                                                <td>
-                                                    {{ number_format($item->harga) }}
-                                                </td>
-                                                <td>
-                                                    {{ number_format($item->gross) }}
-                                                </td>
+                                                <td>{{ number_format($item->harga) }}</td>
+                                                <td>{{ number_format($item->gross) }}</td>
+                                                <td>{{ number_format($item->gross / $item->qty) }}</td>
                                             </tr>
                                             @php
                                                 $grandtotal_beli += $item->gross;
                                                 $total_qty_beli += $item->qty;
                                                 $total_harga_beli += $item->harga;
+                                                $total_harga_stok_beli += $item->gross / $item->qty;
                                             @endphp
                                         @endforeach
 
@@ -181,23 +186,20 @@
                                                 <td>
                                                     {{ number_format($item->harga) }}
                                                 </td>
+                                                <td>{{ number_format($item->gross) }}</td>
                                                 <td>-
-                                                    {{ number_format($item->gross) }}
+                                                    {{ number_format($item->gross / $item->qty_retur) }}
                                                 </td>
                                             </tr>
                                             @php
                                                 $grandtotal_retur_beli += $item->gross;
                                                 $total_qty_retur_beli += $item->qty_retur;
                                                 $total_harga_retur_beli += $item->harga;
+                                                $total_harga_stok_retur_beli += $item->gross / $item->qty_retur;
                                             @endphp
                                         @endforeach
 
                                         @foreach ($laporan['stok_jual'] as $item)
-                                            @php
-                                                $grandtotal_jual += $item->gross;
-                                                $total_qty_jual += $item->qty;
-                                                $total_harga_jual += $item->harga;
-                                            @endphp
                                             <tr>
                                                 <td>{{ $no++ }}</td>
                                                 <td>{{ $item->barang->kode . ' - ' . $item->barang->nama }}
@@ -207,7 +209,14 @@
                                                 <td>-{{ $item->qty }}</td>
                                                 <td>{{ number_format($item->harga) }}</td>
                                                 <td>{{ number_format($item->gross) }}</td>
+                                                <td> {{ number_format($item->gross / $item->qty) }}</td>
                                             </tr>
+                                            @php
+                                                $grandtotal_jual += $item->gross;
+                                                $total_qty_jual += $item->qty;
+                                                $total_harga_jual += $item->harga;
+                                                $total_harga_stok_jual += $item->gross / $item->qty;
+                                            @endphp
                                         @endforeach
 
                                         @foreach ($laporan['stok_retur_jual'] as $item)
@@ -220,11 +229,13 @@
                                                 <td> {{ $item->qty_retur }}</td>
                                                 <td>{{ number_format($item->harga) }}</td>
                                                 <td>{{ number_format($item->gross) }}</td>
+                                                <td>{{ number_format($item->gross / $item->qty_retur) }}</td>
                                             </tr>
                                             @php
                                                 $grandtotal_retur_jual += $item->gross;
                                                 $total_qty_retur_jual += $item->qty_retur;
                                                 $total_harga_retur_jual += $item->harga;
+                                                $total_harga_stok_retur_jual += $item->gross / $item->qty_retur;
                                             @endphp
                                         @endforeach
 
@@ -238,11 +249,13 @@
                                                 <td> {{ $item->qty }}</td>
                                                 <td>{{ number_format($item->harga) }}</td>
                                                 <td>{{ number_format($item->subtotal) }}</td>
+                                                <td>{{ number_format($item->subtotal / $item->qty) }}</td>
                                             </tr>
                                             @php
                                                 $grandtotal_adjustment_plus += $item->subtotal;
                                                 $total_qty_adjustment_plus += $item->qty;
                                                 $total_harga_adjustment_plus += $item->harga;
+                                                $total_harga_stok_adjustment_plus += $item->subtotal / $item->qty;
                                             @endphp
                                         @endforeach
 
@@ -254,13 +267,17 @@
                                                 <td>{{ $item->adjustment_minus->gudang->nama }}</td>
                                                 <td>Adj Min</td>
                                                 <td>-{{ $item->qty }}</td>
-                                                <td>{{ number_format($item->barang->harga_beli) }} </td>
-                                                <td>-{{ number_format($item->barang->harga_beli * $item->qty) }}</td>
+                                                <td>{{ number_format($item->barang->harga_beli) }}</td>
+                                                <td>-{{ number_format($item->barang->harga_beli * $item->qty) }}
+                                                </td>
+                                                <td>-{{ number_format(($item->barang->harga_beli * $item->qty) / $item->qty) }}
+                                                </td>
                                             </tr>
                                             @php
                                                 $grandtotal_adjustment_minus += $item->barang->harga_beli * $item->qty;
                                                 $total_qty_adjustment_minus += $item->qty;
                                                 $total_harga_adjustment_minus += $item->barang->harga_beli;
+                                                $total_harga_stok_adjustment_minus += ($item->barang->harga_beli * $item->qty) / $item->qty;
                                             @endphp
                                         @endforeach
                                     @endif
@@ -277,6 +294,9 @@
                                         </th>
                                         <th>
                                             {{ number_format($grandtotal_beli + $grandtotal_adjustment_plus + $grandtotal_retur_jual - $grandtotal_jual - $grandtotal_retur_beli - $grandtotal_adjustment_minus) }}
+                                        </th>
+                                        <th>
+                                            {{ number_format($total_harga_stok_beli + $total_harga_stok_adjustment_plus + $total_harga_stok_retur_jual - $total_harga_stok_jual - $total_harga_stok_retur_beli - $total_harga_stok_adjustment_minus) }}
                                         </th>
                                     </tr>
                                 </tfoot>

@@ -349,7 +349,7 @@
                                                     <td>
                                                         {{ number_format($detail->clr_fee) }}
                                                         <input type="hidden" class="clr_fee_hidden" name="clr_fee[]"
-                                                            value=" {{ $detail->clr_fee }}">
+                                                            value="{{ $detail->clr_fee }}">
                                                     </td>
                                                     <td>
                                                         {{ number_format($detail->netto) }}

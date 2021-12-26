@@ -568,7 +568,7 @@
                     text: 'Qty Retur tidak boleh lebih besar dari Qty Beli!'
                 })
             } else {
-                let diskon = harga * (diskon_persen / 100)
+                let diskon = harga * qty_retur * (diskon_persen / 100)
 
                 let gross = (harga * qty_retur) - diskon
 
