@@ -28,6 +28,9 @@ class StokBarangReportController extends Controller
             $laporan = $this->getLaporan();
         }
 
+        // return $laporan;
+        // die;
+
         // return $laporan['stok_retur_beli'];
         // die;
 
@@ -56,7 +59,7 @@ class StokBarangReportController extends Controller
     {
         $stok_beli = PembelianDetail::select('id', 'qty', 'harga', 'gross', 'barang_id', 'pembelian_id')->with(
             'barang:id,nama,kode',
-            'pembelian:id,gudang_id',
+            'pembelian:id,gudang_id,kode,total_netto',
             'pembelian.gudang:id,nama',
         )
             ->when(request()->query('barang'), function ($q) {
@@ -76,12 +79,12 @@ class StokBarangReportController extends Controller
                 });
             })
             ->orderByDesc('pembelian_id')
-            ->limit(75)
+            ->limit(100)
             ->get();
 
         $stok_retur_beli = ReturPembelianDetail::select('id', 'qty_retur', 'harga', 'gross', 'barang_id', 'retur_pembelian_id')->with(
             'barang:id,nama,kode',
-            'retur_pembelian:id,gudang_id',
+            'retur_pembelian:id,gudang_id,total_netto,kode',
             'retur_pembelian.gudang:id,nama',
         )
             ->when(request()->query('barang'), function ($q) {
@@ -102,12 +105,12 @@ class StokBarangReportController extends Controller
             })
             ->where('qty_retur', '!=', 0)
             ->orderByDesc('retur_pembelian_id')
-            ->limit(75)
+            ->limit(100)
             ->get();
 
         $stok_jual = PenjualanDetail::select('id', 'qty', 'harga', 'gross', 'barang_id', 'penjualan_id')->with(
             'barang:id,nama,kode',
-            'penjualan:id,gudang_id',
+            'penjualan:id,gudang_id,total_netto,kode',
             'penjualan.gudang:id,nama',
         )
             ->when(request()->query('barang'), function ($q) {
@@ -127,12 +130,12 @@ class StokBarangReportController extends Controller
                 });
             })
             ->orderByDesc('penjualan_id')
-            ->limit(75)
+            ->limit(100)
             ->get();
 
         $stok_retur_jual = ReturPenjualanDetail::select('id', 'qty_retur', 'harga', 'gross', 'barang_id', 'retur_penjualan_id')->with(
             'barang:id,nama,kode',
-            'retur_penjualan:id,gudang_id',
+            'retur_penjualan:id,gudang_id,total_netto,kode',
             'retur_penjualan.gudang:id,nama',
         )
             ->when(request()->query('barang'), function ($q) {
@@ -153,13 +156,12 @@ class StokBarangReportController extends Controller
             })
             ->where('qty_retur', '!=', 0)
             ->orderByDesc('retur_penjualan_id')
-            ->limit(75)
+            ->limit(100)
             ->get();
-
 
         $stok_adjustment_plus = AdjustmentPlusDetail::select('id', 'qty', 'harga', 'subtotal', 'barang_id', 'adjustment_plus_id')->with(
             'barang:id,nama,kode',
-            'adjustment_plus:id,gudang_id',
+            'adjustment_plus:id,gudang_id,grand_total,kode',
             'adjustment_plus.gudang:id,nama',
         )
             ->when(request()->query('barang'), function ($q) {
@@ -179,12 +181,12 @@ class StokBarangReportController extends Controller
                 });
             })
             ->orderByDesc('adjustment_plus_id')
-            ->limit(75)
+            ->limit(100)
             ->get();
 
         $stok_adjustment_minus = AdjustmentMinusDetail::select('id', 'qty', 'barang_id', 'adjustment_minus_id')->with(
             'barang:id,nama,kode,harga_beli',
-            'adjustment_minus:id,gudang_id',
+            'adjustment_minus:id,gudang_id,kode',
             'adjustment_minus.gudang:id,nama',
         )
             ->when(request()->query('barang'), function ($q) {
@@ -204,7 +206,7 @@ class StokBarangReportController extends Controller
                 });
             })
             ->orderByDesc('adjustment_minus_id')
-            ->limit(75)
+            ->limit(100)
             ->get();
 
         return [
