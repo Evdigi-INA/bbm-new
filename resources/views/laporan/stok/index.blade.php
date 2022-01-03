@@ -164,14 +164,14 @@
                                                 {{-- <td>Purch</td> --}}
                                                 <td> {{ $item->qty }}</td>
                                                 <td>{{ number_format($item->harga) }}</td>
-                                                <td>{{ number_format($item->pembelian->total_netto) }}</td>
-                                                <td>{{ number_format($item->pembelian->total_netto / $item->qty) }}</td>
+                                                <td>{{ number_format($item->netto) }}</td>
+                                                <td>{{ number_format($item->netto / $item->qty) }}</td>
                                             </tr>
                                             @php
-                                                $grandtotal_beli += $item->pembelian->total_netto;
+                                                $grandtotal_beli += $item->netto;
                                                 $total_qty_beli += $item->qty;
                                                 $total_harga_beli += $item->harga;
-                                                $total_harga_stok_beli += $item->pembelian->total_netto / $item->qty;
+                                                $total_harga_stok_beli += $item->netto / $item->qty;
                                             @endphp
                                         @endforeach
 
@@ -186,16 +186,16 @@
                                                 <td>
                                                     {{ number_format($item->harga) }}
                                                 </td>
-                                                <td>{{ number_format($item->retur_pembelian->total_netto) }}</td>
+                                                <td>{{ number_format($item->netto) }}</td>
                                                 <td>-
-                                                    {{ number_format($item->retur_pembelian->total_netto / $item->qty_retur) }}
+                                                    {{ number_format($item->netto / $item->qty_retur) }}
                                                 </td>
                                             </tr>
                                             @php
-                                                $grandtotal_retur_beli += $item->retur_pembelian->total_netto;
+                                                $grandtotal_retur_beli += $item->netto;
                                                 $total_qty_retur_beli += $item->qty_retur;
                                                 $total_harga_retur_beli += $item->harga;
-                                                $total_harga_stok_retur_beli += $item->retur_pembelian->total_netto / $item->qty_retur;
+                                                $total_harga_stok_retur_beli += $item->netto / $item->qty_retur;
                                             @endphp
                                         @endforeach
 
@@ -208,14 +208,14 @@
                                                 {{-- <td>Sale</td> --}}
                                                 <td>-{{ $item->qty }}</td>
                                                 <td>{{ number_format($item->harga) }}</td>
-                                                <td>{{ number_format($item->penjualan->total_netto) }}</td>
-                                                <td> {{ number_format($item->penjualan->total_netto / $item->qty) }}</td>
+                                                <td>{{ number_format($item->netto) }}</td>
+                                                <td> {{ number_format($item->netto / $item->qty) }}</td>
                                             </tr>
                                             @php
-                                                $grandtotal_jual += $item->penjualan->total_netto;
+                                                $grandtotal_jual += $item->netto;
                                                 $total_qty_jual += $item->qty;
                                                 $total_harga_jual += $item->harga;
-                                                $total_harga_stok_jual += $item->penjualan->total_netto / $item->qty;
+                                                $total_harga_stok_jual += $item->netto / $item->qty;
                                             @endphp
                                         @endforeach
 
@@ -228,15 +228,15 @@
                                                 {{-- <td>Return Sale</td> --}}
                                                 <td> {{ $item->qty_retur }}</td>
                                                 <td>{{ number_format($item->harga) }}</td>
-                                                <td>{{ number_format($item->retur_penjualan->total_netto) }}</td>
-                                                <td>{{ number_format($item->retur_penjualan->total_netto / $item->qty_retur) }}
+                                                <td>{{ number_format($item->netto) }}</td>
+                                                <td>{{ number_format($item->netto / $item->qty_retur) }}
                                                 </td>
                                             </tr>
                                             @php
-                                                $grandtotal_retur_jual += $item->retur_penjualan->total_netto;
+                                                $grandtotal_retur_jual += $item->netto;
                                                 $total_qty_retur_jual += $item->qty_retur;
                                                 $total_harga_retur_jual += $item->harga;
-                                                $total_harga_stok_retur_jual += $item->retur_penjualan->total_netto / $item->qty_retur;
+                                                $total_harga_stok_retur_jual += $item->netto / $item->qty_retur;
                                             @endphp
                                         @endforeach
 
