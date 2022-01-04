@@ -249,15 +249,15 @@
                                                 {{-- <td>Adj Plus</td> --}}
                                                 <td> {{ $item->qty }}</td>
                                                 <td>{{ number_format($item->harga) }}</td>
-                                                <td>{{ number_format($item->adjustment_plus->grand_total) }}</td>
-                                                <td>{{ number_format($item->adjustment_plus->grand_total / $item->qty) }}
+                                                <td>{{ number_format($item->subtotal) }}</td>
+                                                <td>{{ number_format($item->subtotal / $item->qty) }}
                                                 </td>
                                             </tr>
                                             @php
-                                                $grandtotal_adjustment_plus += $item->grand_total;
+                                                $grandtotal_adjustment_plus += $item->subtotal;
                                                 $total_qty_adjustment_plus += $item->qty;
                                                 $total_harga_adjustment_plus += $item->harga;
-                                                $total_harga_stok_adjustment_plus += $item->adjustment_plus->grand_total / $item->qty;
+                                                $total_harga_stok_adjustment_plus += $item->subtotal / $item->qty;
                                             @endphp
                                         @endforeach
 

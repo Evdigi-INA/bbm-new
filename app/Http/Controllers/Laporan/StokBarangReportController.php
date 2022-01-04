@@ -82,7 +82,7 @@ class StokBarangReportController extends Controller
             ->limit(100)
             ->get();
 
-        $stok_retur_beli = ReturPembelianDetail::select('id', 'qty_retur', 'harga', 'gross', 'barang_id', 'retur_pembelian_id')->with(
+        $stok_retur_beli = ReturPembelianDetail::select('id', 'qty_retur', 'harga', 'gross', 'barang_id', 'retur_pembelian_id', 'netto')->with(
             'barang:id,nama,kode',
             'retur_pembelian:id,gudang_id,total_netto,kode',
             'retur_pembelian.gudang:id,nama',
@@ -133,7 +133,7 @@ class StokBarangReportController extends Controller
             ->limit(100)
             ->get();
 
-        $stok_retur_jual = ReturPenjualanDetail::select('id', 'qty_retur', 'harga', 'gross', 'barang_id', 'retur_penjualan_id')->with(
+        $stok_retur_jual = ReturPenjualanDetail::select('id', 'qty_retur', 'harga', 'gross', 'barang_id', 'retur_penjualan_id', 'netto')->with(
             'barang:id,nama,kode',
             'retur_penjualan:id,gudang_id,total_netto,kode',
             'retur_penjualan.gudang:id,nama',
